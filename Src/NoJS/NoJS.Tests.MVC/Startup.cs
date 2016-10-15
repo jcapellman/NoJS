@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using NoJS.Library;
+using NoJS.Library.Common;
 
 namespace NoJS.Tests.MVC {
     public class Startup {
@@ -21,6 +22,8 @@ namespace NoJS.Tests.MVC {
         
         public void ConfigureServices(IServiceCollection services) {
             services.AddMvc();
+            services.AddTransient<ISitePreferenceRepository, SitePreferenceRepository>();
+            services.AddDeviceSwitcher<UrlSwitcher>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory) {
