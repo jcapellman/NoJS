@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using NoJS.Library;
 using NoJS.Library.Common;
+using NoJS.Library.Interfaces;
 
 namespace NoJS.Tests.MVC {
     public class Startup {
