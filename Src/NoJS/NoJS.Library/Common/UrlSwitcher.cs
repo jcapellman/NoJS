@@ -1,15 +1,10 @@
-﻿using NoJS.Library;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.Options;
+
 using NoJS.Library.Interfaces;
 
 namespace NoJS.Library.Common {
-    #region usings
-    
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Http.Extensions;
-    using Microsoft.Extensions.Options;
-
-    #endregion
-
     public class UrlSwitcher : IDeviceSwitcher {
         private readonly IDeviceFactory _deviceFactory;
         private readonly IDeviceRedirector _deviceRedirector;
@@ -26,15 +21,7 @@ namespace NoJS.Library.Common {
         public IDevice LoadPreference(HttpContext context) {
             var url = context.Request.GetDisplayUrl();
 
-            if (url.Contains($"//{_options.Value.MobileCode}.")) {
-                return _deviceFactory.Mobile();
-            }
-
-            if (url.Contains($"//{_options.Value.TabletCode}.")) {
-                return _deviceFactory.Tablet();
-            }
-
-            return null;
+            return url.Contains($"//{_options.Value.LegacyCode}.") ? _deviceFactory.Legacy() : null;
         }
 
         public void StoreDevice(HttpContext context, IDevice device)

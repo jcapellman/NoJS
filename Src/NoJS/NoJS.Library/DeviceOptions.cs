@@ -11,10 +11,8 @@ namespace NoJS.Library {
         public IEnumerable<string> TabletUserAgentKeywords { get; set; } = new List<string>();
 
         public IEnumerable<string> NormalUserAgentKeywords { get; set; } = new List<string>();
-
-        public string MobileCode { get; set; } = "m";
-
-        public string TabletCode { get; set; } = "t";
+        
+        public string LegacyCode { get; set; } = "l";
 
         public DeviceLocationExpanderFormat Format { get; set; } = DeviceLocationExpanderFormat.Suffix;
     }

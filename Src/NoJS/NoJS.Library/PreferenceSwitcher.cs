@@ -26,14 +26,10 @@ namespace NoJS.Library {
                     return;
                 }
 
-                if (device == _options.Value.MobileKey) {
-                    _repository.SavePreference(context, _deviceFactory.Mobile());
-                } else if (device == _options.Value.TabletKey) {
-                    _repository.SavePreference(context, _deviceFactory.Tablet());
+                if (device == _options.Value.LegacyKey) {
+                    _repository.SavePreference(context, _deviceFactory.Legacy());
                 } else if (device == _options.Value.NormalKey) {
                     _repository.SavePreference(context, _deviceFactory.Normal());
-                } else if (device == _options.Value.ResetKey) {
-                    _repository.ResetPreference(context);
                 }
             });
         }

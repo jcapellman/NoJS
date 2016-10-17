@@ -1,16 +1,12 @@
-﻿using NoJS.Library;
-using NoJS.Library.Interfaces;
+﻿using NoJS.Library.Interfaces;
+
+using System.Collections.Generic;
+using System.Linq;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace NoJS.Library.Common {
-    #region usings
-
-    using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Options;
-
-    #endregion
-
     public class SitePreferenceRepository : ISitePreferenceRepository {
         private readonly IDeviceResolver _deviceResolver;
         private readonly IOptions<SwitcherOptions> _options;

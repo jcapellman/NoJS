@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using NoJS.Library.Enums;
+﻿using NoJS.Library.Enums;
 using NoJS.Library.Interfaces;
 
-namespace NoJS.Library.Common
-{
+namespace NoJS.Library.Common {
     public class LiteDevice : IDevice {
         private readonly DeviceType _deviceType;
 
@@ -15,8 +10,7 @@ namespace NoJS.Library.Common
             DeviceCode = code;
         }
 
-        public bool IsMobile => _deviceType == DeviceType.Mobile;
-        public bool IsTablet => _deviceType == DeviceType.Tablet;
+        public bool IsLegacy => _deviceType == DeviceType.Legacy;
         public bool IsNormal => _deviceType == DeviceType.Normal;
         public string DeviceCode { get; }
         public override string ToString() {

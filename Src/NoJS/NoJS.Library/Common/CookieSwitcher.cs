@@ -1,16 +1,11 @@
 ﻿using NoJS.Library.Interfaces;
 
+using Microsoft.AspNetCore.Http;
+
 namespace NoJS.Library.Common {
-    #region usings
-    
-    using Microsoft.AspNetCore.Http;
-
-    #endregion
-
     public class CookieSwitcher : IDeviceSwitcher {
         private const string DevicePreferenceCookieKey = ".MvcDeviceDetector.Preference";
-        private const string MobilePreferenceKey = "Mobile";
-        private const string TabletPreferenceKey = "Tablet";
+        private const string LegacyPreferenceKey = "Legacy";
         private const string NormalPreferenceKey = "Normal";
 
         private readonly IDeviceFactory _deviceFactory;
@@ -27,10 +22,8 @@ namespace NoJS.Library.Common {
             if (!context.Request.Cookies.ContainsKey(DevicePreferenceCookieKey)) return null;
 
             switch (context.Request.Cookies[DevicePreferenceCookieKey]) {
-                case MobilePreferenceKey:
-                    return _deviceFactory.Mobile();
-                case TabletPreferenceKey:
-                    return _deviceFactory.Tablet();
+                case LegacyPreferenceKey:
+                    return _deviceFactory.Legacy();
                 case NormalPreferenceKey:
                     return _deviceFactory.Normal();
             }
@@ -39,10 +32,8 @@ namespace NoJS.Library.Common {
         }
 
         public void StoreDevice(HttpContext context, IDevice device) {
-            if (device.IsMobile) {
-                context.Response.Cookies.Append(DevicePreferenceCookieKey, MobilePreferenceKey);
-            } else if (device.IsTablet) {
-                context.Response.Cookies.Append(DevicePreferenceCookieKey, TabletPreferenceKey);
+            if (device.IsLegacy) {
+                context.Response.Cookies.Append(DevicePreferenceCookieKey, LegacyPreferenceKey);
             } else if (device.IsNormal) {
                 context.Response.Cookies.Append(DevicePreferenceCookieKey, NormalPreferenceKey);
             }

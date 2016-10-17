@@ -2,10 +2,8 @@
 
 namespace NoJS.Library {
     public class SwitcherOptions {
-        public string MobileKey { get; set; } = "mobile";
-
-        public string TabletKey { get; set; } = "tablet";
-
+        public string LegacyKey { get; set; } = "legacy";
+        
         public string NormalKey { get; set; } = "normal";
 
         public string ResetKey { get; set; } = "reset";

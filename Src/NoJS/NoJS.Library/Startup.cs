@@ -9,8 +9,8 @@ using Microsoft.Extensions.Options;
 using NoJS.Library.Interfaces;
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using MvcDeviceDetector.Device;
 using NoJS.Library.Common;
-using NoJS.Library.Device;
 
 namespace NoJS.Library {
     public static class Configuration {

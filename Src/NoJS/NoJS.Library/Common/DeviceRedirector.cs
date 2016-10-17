@@ -1,14 +1,10 @@
-﻿using NoJS.Library;
-using NoJS.Library.Interfaces;
+﻿using NoJS.Library.Interfaces;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace NoJS.Library.Common {
-    #region usings
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Http.Extensions;
-    using Microsoft.Extensions.Options;
-
-    #endregion
-
     public class DeviceRedirector : IDeviceRedirector {
         private readonly IOptions<DeviceOptions> _options;
         private readonly IOptions<SwitcherOptions> _switcherOptions;
@@ -33,10 +29,8 @@ namespace NoJS.Library.Common {
         protected virtual string ResetUrl(string referrerUrl)
             => referrerUrl
                 .Replace($"/{_switcherOptions.Value.SwitchUrl}/{_switcherOptions.Value.NormalKey}", "")
-                .Replace($"/{_switcherOptions.Value.SwitchUrl}/{_switcherOptions.Value.MobileKey}", "")
-                .Replace($"/{_switcherOptions.Value.SwitchUrl}/{_switcherOptions.Value.TabletKey}", "")
+                .Replace($"/{_switcherOptions.Value.SwitchUrl}/{_switcherOptions.Value.LegacyKey}", "")
                 .Replace($"/{_switcherOptions.Value.SwitchUrl}/{_switcherOptions.Value.ResetKey}", "")
-                .Replace($"//{_options.Value.TabletCode}.", "//")
-                .Replace($"//{_options.Value.MobileCode}.", "//");
+                .Replace($"//{_options.Value.LegacyCode}.", "//");
     }
 }
