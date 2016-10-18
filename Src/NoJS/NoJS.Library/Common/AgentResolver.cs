@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace MvcDeviceDetector.Device {
     public class AgentResolver : IDeviceResolver {
-        private static readonly string[] KnownLegacyUserAgentKeywords = { "netscape", "mosiac" };
+        private static readonly string[] KnownLegacyUserAgentKeywords = { "netscape", "mosiac", "Mozilla/" };
         private readonly IDeviceFactory _deviceFactory;
         private readonly IOptions<DeviceOptions> _options;
 
