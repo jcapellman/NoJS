@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using NoJS.Library.Filters;
+
 namespace NoJS.Tests.MVC.Controllers {
     public class HomeController : Controller {
         public IActionResult Index() {
             return View();
         }
 
+        [ServiceFilter(typeof(LegacyFilter))]
         public IActionResult About() {
             ViewData["Message"] = "Your application description page.";
 

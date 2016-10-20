@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using NoJS.Library;
 using NoJS.Library.Common;
 using NoJS.Library.Interfaces;
+using NoJS.Library.Filters;
 
 namespace NoJS.Tests.MVC {
     public class Startup {
@@ -23,6 +24,7 @@ namespace NoJS.Tests.MVC {
         
         public void ConfigureServices(IServiceCollection services) {
             services.AddMvc();
+            services.AddScoped<LegacyFilter>();
             services.AddTransient<ISitePreferenceRepository, SitePreferenceRepository>();
             services.AddDeviceSwitcher<UrlSwitcher>();
         }
