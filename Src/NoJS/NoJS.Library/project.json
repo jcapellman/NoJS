@@ -5,7 +5,8 @@
     "Microsoft.AspNetCore.Mvc.Razor": "1.0.1",
     "Microsoft.AspNetCore.Routing.Abstractions": "1.0.1",
     "Microsoft.Extensions.DependencyInjection": "1.0.0",
-    "NETStandard.Library": "1.6.0"
+    "NETStandard.Library": "1.6.0",
+    "System.Linq.Queryable": "4.0.1"
   },
 
   "frameworks": {
