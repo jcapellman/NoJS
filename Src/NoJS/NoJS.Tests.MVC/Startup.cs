@@ -24,7 +24,7 @@ namespace NoJS.Tests.MVC {
         
         public void ConfigureServices(IServiceCollection services) {
             services.AddMvc();
-            services.AddScoped<LegacyFilter>();
+            services.AddScoped<LegacyFilterAttribute>();
             services.AddTransient<ISitePreferenceRepository, SitePreferenceRepository>();
             services.AddDeviceSwitcher<UrlSwitcher>();
         }

@@ -8,7 +8,7 @@ namespace NoJS.Tests.MVC.Controllers {
             return View();
         }
 
-        [ServiceFilter(typeof(LegacyFilter))]
+        [ServiceFilter(typeof(LegacyFilterAttribute))]
         public IActionResult About() {
             ViewData["Message"] = "Your application description page.";
 
