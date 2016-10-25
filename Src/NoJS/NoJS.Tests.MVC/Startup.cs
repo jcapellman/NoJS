@@ -23,8 +23,7 @@ namespace NoJS.Tests.MVC {
         public IConfigurationRoot Configuration { get; }
         
         public void ConfigureServices(IServiceCollection services) {
-            services.AddMvc();
-            services.AddScoped<LegacyFilterAttribute>();
+            services.AddMvc();            
             services.AddTransient<ISitePreferenceRepository, SitePreferenceRepository>();
             services.AddDeviceSwitcher<UrlSwitcher>();
         }
@@ -34,8 +33,9 @@ namespace NoJS.Tests.MVC {
             
             app.UseStaticFiles();
 
-            app.UseMvc(routes =>
-            {
+            app.UseLegacyMiddleware();
+
+            app.UseMvc(routes => {
                 routes.MapDeviceSwitcher();
 
                 routes.MapRoute(
