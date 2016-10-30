@@ -16,7 +16,7 @@ namespace NoJS.Library.Filters {
         }
 
         public async Task Invoke(HttpContext context) {
-            var response = await GenerateResponse(context);x
+            var response = await GenerateResponse(context);
             
             await context.Response.WriteAsync(response);
         }
@@ -26,9 +26,10 @@ namespace NoJS.Library.Filters {
 
             var existingBody = context.Response.Body;
 
-            using (var newBody = new MemoryStream()) {                
-                await _next.Invoke(context);
-                
+            using (var newBody = new MemoryStream())
+            {
+                await _next(context);
+                            
                 context.Response.Body = existingBody;
 
                 newBody.Seek(0, SeekOrigin.Begin);
