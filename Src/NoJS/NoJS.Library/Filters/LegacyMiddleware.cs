@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 namespace NoJS.Library.Filters {
     public class LegacyMiddleware {
         private readonly RequestDelegate _next;
-        private bool _enableJS;
+        private readonly bool _enableJS;
 
         public LegacyMiddleware(RequestDelegate next, bool enableJS = false) {
             _next = next;
@@ -17,31 +17,27 @@ namespace NoJS.Library.Filters {
 
         public async Task Invoke(HttpContext context) {
             var response = await GenerateResponse(context);
-            
+
             await context.Response.WriteAsync(response);
         }
 
         private async Task<string> GenerateResponse(HttpContext context) {
             var content = string.Empty;
 
-            var existingBody = context.Response.Body;
+            await _next(context);
 
-            using (var newBody = new MemoryStream())
-            {
-                await _next(context);
-                            
-                context.Response.Body = existingBody;
-
-                newBody.Seek(0, SeekOrigin.Begin);
-
-                content = new StreamReader(newBody).ReadToEnd();
-
-                if (!_enableJS) {
-                   content = Regex.Replace(content, "<script[^<]*</script>", "");
-                }
-                
-                return content;
+            if (context.Request.Body.CanSeek) {
+                context.Request.Body.Position = 0;
             }
+
+            content = new StreamReader(context.Request.Body).ReadToEnd();
+                
+            if (!_enableJS) {
+                content = Regex.Replace(content, "<script[^<]*</script>", "");
+            }
+
+            return content;
+            
         }
     }
 
