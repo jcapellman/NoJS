@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -8,36 +9,64 @@ using Microsoft.AspNetCore.Http;
 namespace NoJS.Library.Filters {
     public class LegacyMiddleware {
         private readonly RequestDelegate _next;
-        private readonly bool _enableJS;
 
-        public LegacyMiddleware(RequestDelegate next, bool enableJS = false) {
+        private readonly bool _enableJS;
+        private readonly bool _enableRenderTime;
+        private readonly bool _enableCSS;
+
+        public LegacyMiddleware(RequestDelegate next, bool enableJS = false, bool enableRenderTime = false, bool enableCSS = false) {
             _next = next;
+
             _enableJS = enableJS;
+            _enableRenderTime = enableRenderTime;
+            _enableCSS = enableCSS;
         }
 
         public async Task Invoke(HttpContext context) {
-            var response = await GenerateResponse(context);
+            var sw = new Stopwatch();
+            sw.Start();
 
-            await context.Response.WriteAsync(response);
-        }
+            using (var memoryStream = new MemoryStream()) {
+                var bodyStream = context.Response.Body;
 
-        private async Task<string> GenerateResponse(HttpContext context) {
-            var content = string.Empty;
+                context.Response.Body = memoryStream;
 
-            await _next(context);
+                await _next(context);
 
-            if (context.Request.Body.CanSeek) {
-                context.Request.Body.Position = 0;
+                var isHtml = context.Response.ContentType?.ToLower().Contains("text/html");
+
+                if (context.Response.StatusCode == 200 && isHtml.GetValueOrDefault()) {
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+
+                    using (var streamReader = new StreamReader(memoryStream)) {
+                        var responseBody = await streamReader.ReadToEndAsync();
+
+                        if (_enableRenderTime) {
+                            var updatedFooter = @"<footer><div>Page processed in {0} seconds.</div>";
+
+                            responseBody = responseBody.Replace("<footer>", string.Format(updatedFooter, sw.ElapsedMilliseconds / 60));
+
+                            context.Response.Headers.Add("X-ElapsedTime", new[] {sw.ElapsedMilliseconds.ToString()});
+                        }
+
+                        if (!_enableJS) {
+                            responseBody = Regex.Replace(responseBody, "<script[^<]*</script>", "");
+                        }
+
+                        if (!_enableCSS) {
+                            responseBody = Regex.Replace(responseBody, "<link[^<]*>", "");
+                        }
+
+                        using (var amendedBody = new MemoryStream()) {
+                            using (var streamWriter = new StreamWriter(amendedBody)) {
+                                streamWriter.Write(responseBody);
+                                amendedBody.Seek(0, SeekOrigin.Begin);
+                                await amendedBody.CopyToAsync(bodyStream);
+                            }
+                        }
+                    }
+                }
             }
-
-            content = new StreamReader(context.Request.Body).ReadToEnd();
-                
-            if (!_enableJS) {
-                content = Regex.Replace(content, "<script[^<]*</script>", "");
-            }
-
-            return content;
-            
         }
     }
 
