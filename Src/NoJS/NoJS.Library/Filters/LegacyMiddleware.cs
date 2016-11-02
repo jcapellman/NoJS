@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using NoJS.Library.Objects;
 
 namespace NoJS.Library.Filters {
     public class LegacyMiddleware {
@@ -14,12 +15,12 @@ namespace NoJS.Library.Filters {
         private readonly bool _enableRenderTime;
         private readonly bool _enableCSS;
 
-        public LegacyMiddleware(RequestDelegate next, bool enableJS = false, bool enableRenderTime = false, bool enableCSS = false) {
+        public LegacyMiddleware(RequestDelegate next, Options option) {
             _next = next;
 
-            _enableJS = enableJS;
-            _enableRenderTime = enableRenderTime;
-            _enableCSS = enableCSS;
+            _enableJS = option.EnableJS;
+            _enableRenderTime = option.EnableRenderTime;
+            _enableCSS = option.EnableCSS;
         }
 
         public async Task Invoke(HttpContext context) {
@@ -71,8 +72,8 @@ namespace NoJS.Library.Filters {
     }
 
     public static class LegacyMiddlewareExtensions {
-        public static IApplicationBuilder UseLegacyMiddleware(this IApplicationBuilder builder, bool enableJS = false) {
-            return builder.UseMiddleware<LegacyMiddleware>(enableJS);
+        public static IApplicationBuilder UseLegacyMiddleware(this IApplicationBuilder builder, Options option) {
+            return builder.UseMiddleware<LegacyMiddleware>(option);
         }
     }
 }

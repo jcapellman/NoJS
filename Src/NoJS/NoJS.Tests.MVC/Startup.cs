@@ -8,6 +8,7 @@ using NoJS.Library;
 using NoJS.Library.Common;
 using NoJS.Library.Interfaces;
 using NoJS.Library.Filters;
+using NoJS.Library.Objects;
 
 namespace NoJS.Tests.MVC {
     public class Startup {
@@ -32,7 +33,7 @@ namespace NoJS.Tests.MVC {
             
             app.UseStaticFiles();
 
-            app.UseLegacyMiddleware();
+            app.UseLegacyMiddleware(new Options {EnableCSS = false, EnableRenderTime = true, EnableJS = false});
 
             app.UseMvc(routes => {
                 routes.MapDeviceSwitcher();
