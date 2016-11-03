@@ -5,22 +5,19 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+
 using NoJS.Library.Objects;
 
 namespace NoJS.Library.Filters {
     public class LegacyMiddleware {
         private readonly RequestDelegate _next;
 
-        private readonly bool _enableJS;
-        private readonly bool _enableRenderTime;
-        private readonly bool _enableCSS;
+        private readonly Options _option;
 
         public LegacyMiddleware(RequestDelegate next, Options option) {
             _next = next;
 
-            _enableJS = option.EnableJS;
-            _enableRenderTime = option.EnableRenderTime;
-            _enableCSS = option.EnableCSS;
+            _option = option;
         }
 
         public async Task Invoke(HttpContext context) {
@@ -42,7 +39,7 @@ namespace NoJS.Library.Filters {
                     using (var streamReader = new StreamReader(memoryStream)) {
                         var responseBody = await streamReader.ReadToEndAsync();
 
-                        if (_enableRenderTime) {
+                        if (_option.EnableRenderTime) {
                             var updatedFooter = @"<footer><div>Page processed in {0} seconds.</div>";
 
                             responseBody = responseBody.Replace("<footer>", string.Format(updatedFooter, sw.ElapsedMilliseconds / 60));
@@ -50,11 +47,11 @@ namespace NoJS.Library.Filters {
                             context.Response.Headers.Add("X-ElapsedTime", new[] {sw.ElapsedMilliseconds.ToString()});
                         }
 
-                        if (!_enableJS) {
+                        if (!_option.EnableJS) {
                             responseBody = Regex.Replace(responseBody, "<script[^<]*</script>", "");
                         }
 
-                        if (!_enableCSS) {
+                        if (!_option.EnableCSS) {
                             responseBody = Regex.Replace(responseBody, "<link[^<]*>", "");
                         }
 
