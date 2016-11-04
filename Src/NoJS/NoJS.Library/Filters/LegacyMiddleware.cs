@@ -53,6 +53,7 @@ namespace NoJS.Library.Filters {
 
                         if (!_option.EnableCSS) {
                             responseBody = Regex.Replace(responseBody, "<link[^<]*>", "");
+                            responseBody = Regex.Replace(responseBody, "<style[^<]*>", "");
                         }
 
                         using (var amendedBody = new MemoryStream()) {
