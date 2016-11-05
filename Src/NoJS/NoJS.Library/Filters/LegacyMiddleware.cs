@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -12,13 +13,15 @@ namespace NoJS.Library.Filters {
     public class LegacyMiddleware {
         private readonly RequestDelegate _next;
 
-        private readonly Options _option;
+        private readonly Options[] _options;
 
-        public LegacyMiddleware(RequestDelegate next, Options option) {
+        public LegacyMiddleware(RequestDelegate next, Options[] options) {
             _next = next;
 
-            _option = option;
+            _options = options;
         }
+
+        private bool hasOption(Options option) => _options.Any(a => a == option);
 
         public async Task Invoke(HttpContext context) {
             var sw = new Stopwatch();
@@ -39,7 +42,7 @@ namespace NoJS.Library.Filters {
                     using (var streamReader = new StreamReader(memoryStream)) {
                         var responseBody = await streamReader.ReadToEndAsync();
 
-                        if (_option.EnableRenderTime) {
+                        if (hasOption(Options.RENDER_TIME)) {
                             var updatedFooter = @"<footer><div>Page processed in {0} seconds.</div>";
 
                             responseBody = responseBody.Replace("<footer>", string.Format(updatedFooter, sw.ElapsedMilliseconds / 60));
@@ -47,11 +50,11 @@ namespace NoJS.Library.Filters {
                             context.Response.Headers.Add("X-ElapsedTime", new[] {sw.ElapsedMilliseconds.ToString()});
                         }
 
-                        if (!_option.EnableJS) {
+                        if (!hasOption(Options.JS)) {
                             responseBody = Regex.Replace(responseBody, "<script[^<]*</script>", "");
                         }
 
-                        if (!_option.EnableCSS) {
+                        if (!hasOption(Options.CSS)) {
                             responseBody = Regex.Replace(responseBody, "<link[^<]*>", "");
                             responseBody = Regex.Replace(responseBody, "<style[^<]*>", "");
                         }
@@ -70,8 +73,8 @@ namespace NoJS.Library.Filters {
     }
 
     public static class LegacyMiddlewareExtensions {
-        public static IApplicationBuilder UseLegacyMiddleware(this IApplicationBuilder builder, Options option) {
-            return builder.UseMiddleware<LegacyMiddleware>(option);
+        public static IApplicationBuilder UseLegacyMiddleware(this IApplicationBuilder builder, Options options) {
+            return builder.UseMiddleware<LegacyMiddleware>(options);
         }
     }
 }

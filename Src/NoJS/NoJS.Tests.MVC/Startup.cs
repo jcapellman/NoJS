@@ -33,7 +33,7 @@ namespace NoJS.Tests.MVC {
             
             app.UseStaticFiles();
 
-            app.UseLegacyMiddleware(new Options {EnableCSS = false, EnableRenderTime = true, EnableJS = false});
+            app.UseLegacyMiddleware(Options.RENDER_TIME | Options.JS);
 
             app.UseMvc(routes => {
                 routes.MapDeviceSwitcher();

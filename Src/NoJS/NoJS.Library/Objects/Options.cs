@@ -1,9 +1,10 @@
-﻿namespace NoJS.Library.Objects {
-    public class Options {
-        public bool EnableCSS { get; set; }
+﻿using System;
 
-        public bool EnableJS { get; set; }
-
-        public bool EnableRenderTime { get; set; }
+namespace NoJS.Library.Objects {
+    [Flags]
+    public enum Options {
+        CSS,
+        JS,
+        RENDER_TIME
     }
 }
