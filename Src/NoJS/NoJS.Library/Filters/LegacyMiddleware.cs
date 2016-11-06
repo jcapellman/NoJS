@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -13,15 +12,15 @@ namespace NoJS.Library.Filters {
     public class LegacyMiddleware {
         private readonly RequestDelegate _next;
 
-        private readonly Options[] _options;
+        private readonly Options _options;
 
-        public LegacyMiddleware(RequestDelegate next, Options[] options) {
+        public LegacyMiddleware(RequestDelegate next, Options options) {
             _next = next;
 
             _options = options;
         }
 
-        private bool hasOption(Options option) => _options.Any(a => a == option);
+        private bool hasOption(Options option) => (_options & option) == option;
 
         public async Task Invoke(HttpContext context) {
             var sw = new Stopwatch();
